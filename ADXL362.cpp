@@ -37,8 +37,7 @@ void ADXL362::begin() {
   // soft reset
   SPIwriteOneRegister(0x1F, 0x52);  // Write to SOFT RESET, "R"
   delay(10);
-  Serial.println("Soft Reset\n");
- }
+}
 
  
 //
@@ -47,16 +46,12 @@ void ADXL362::begin() {
 // 
 void ADXL362::beginMeasure() {
   byte temp = SPIreadOneRegister(0x2D);	// read Reg 2D before modifying for measure mode
-  if (debugSerial) {Serial.print(  "Setting Measeurement Mode - Reg 2D before = "); Serial.print(temp); }
 
   // turn on measurement mode
   byte tempwrite = temp | 0x02;			// turn on measurement bit in Reg 2D
   SPIwriteOneRegister(0x2D, tempwrite); // Write to POWER_CTL_REG, Measurement Mode
   delay(10);	
-  
-  if (debugSerial) {
   temp = SPIreadOneRegister(0x2D);
-  Serial.print(  ", Reg 2D after = "); Serial.println(temp); Serial.println();}
 }
 
 
@@ -66,24 +61,27 @@ void ADXL362::beginMeasure() {
 //
 int ADXL362::readXData(){
   int XDATA = SPIreadTwoRegisters(0x0E);
-  if (debugSerial) {Serial.print(  "XDATA = "); Serial.print(XDATA); }
+    int newx = map(XDATA, -1500, 1500, -400, 400);
+
+  if (debugSerial) {Serial.print(newx);}
 }
 
 int ADXL362::readYData(){
   int YDATA = SPIreadTwoRegisters(0x10);
-  if (debugSerial) {Serial.print(  "\tYDATA = "); Serial.print(YDATA); }
+    int newy = map(YDATA, -1500, 1500, -400, 400);
+  if (debugSerial) {Serial.print(newy);}
 
 }
 
 int ADXL362::readZData(){
   int ZDATA = SPIreadTwoRegisters(0x12);
-  if (debugSerial) {Serial.print(  "\tZDATA = "); Serial.print(ZDATA); }
+  if (debugSerial) {Serial.print(ZDATA);}
 
 }
 
 int ADXL362::readTemp(){
   int TEMP = SPIreadTwoRegisters(0x14);
-  if (debugSerial) {Serial.print("\tTEMP = "); Serial.print(TEMP); }
+  if (debugSerial) {Serial.print(TEMP);}
 }
 
 void ADXL362::readXYZTData(int XData, int YData, int ZData, int Temperature){
